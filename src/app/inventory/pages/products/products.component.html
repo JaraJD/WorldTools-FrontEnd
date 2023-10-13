@@ -1,0 +1,26 @@
+<div class="container">
+    <h2>Lista de Productos</h2>
+    <a class="btn btn-primary" routerLink="/inventory/CreateProduct">Create</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Categoría</th>
+          <th>Branch ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <td>{{ product.productName }}</td>
+          <td>{{ product.productDescription }}</td>
+          <td>{{ product.productPrice | currency }}</td>
+          <td>{{ product.productInventoryStock }}</td>
+          <td>{{ product.productCategory }}</td>
+          <td>{{ product.branchId }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

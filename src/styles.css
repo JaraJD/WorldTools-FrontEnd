@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    background:
+      linear-gradient(
+      #ffffffcd,
+      #000000cc),
+      url(https://crm.aftgrupo.com/ws/v3/documentacion/aft/281143/358a3dec23d9b288cc3518fa8416af7c) no-repeat center center fixed;
+      background-size: cover;
+  }

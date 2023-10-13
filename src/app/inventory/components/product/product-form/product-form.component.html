@@ -1,0 +1,61 @@
+<div class="container">
+    <h2 class="text-center" *ngIf="createMode">
+        Create Product
+    </h2>
+    <h2 class="text-center" *ngIf="!createMode">
+        Update Product
+    </h2>
+    <form class="row g-3" id="productF" (ngSubmit)="create()" [formGroup]="productForm">
+
+        <div class="form-floating mb-1">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea1" formControlName="productName"></textarea>
+            <label for="floatingTextarea">Product Name </label>
+            <span class="form-text text-danger mensajeAlert" *ngIf="productForm.get('productName')?.hasError('required') && productForm.get('productName')?.touched ">
+                Product Name required
+            </span>
+        </div>
+
+        <div class="form-floating mb-1">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea1" formControlName="productDescription"></textarea>
+            <label for="floatingTextarea">Product Description </label>
+            <span class="form-text text-danger mensajeAlert" *ngIf="productForm.get('productDescription')?.hasError('required') && productForm.get('productDescription')?.touched ">
+                Product Description required
+            </span>
+        </div>
+
+        <div class="form-floating mb-1">
+            <input type="number" class="form-control" placeholder="Leave a comment here" id="floatingTextarea" formControlName="productPrice">
+                <label for="floatingTextarea">Product Price </label>
+                <span class="form-text text-danger mensajeAlert" *ngIf="productForm.get('productPrice')?.hasError('required') && productForm.get('productPrice')?.touched ">
+                    Product Price required
+                </span>
+        </div>
+
+        <div class="form-floating mb-3">
+            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" formControlName="productCategory">
+            
+            <option value="Hand tools">Hand tools</option>
+            <option value="Power tools">Power tools</option>
+            <option value="Locksmithing">Locksmithing</option>
+            <option value="Construction hardware">Construction hardware</option>
+            <option value="Paint and accessories">Paint and accessories</option>
+            <option value="Gardening and outdoors">Gardening and outdoors</option>
+            <option value="Safety and protection equipment">Safety and protection equipment</option>
+            <option value="Plumbing supplies">Plumbing supplies</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Home fixtures">Home fixtures</option>
+            <option value="Others">Others</option>
+
+            </select>
+            <label for="floatingSelect">Select category</label>
+            <span class="form-text text-danger mensajeAlert" *ngIf="productForm.get('productCategory')?.hasError('required') && productForm.get('productCategory')?.touched ">
+                Category Required
+            </span>
+        </div>
+    
+    </form>
+    <div class="col-12 " *ngIf="createMode">
+        <button class="btn btn-primary" type="submit" form="productF" [disabled]="productForm.invalid">Create</button>
+    </div>
+
+</div>
