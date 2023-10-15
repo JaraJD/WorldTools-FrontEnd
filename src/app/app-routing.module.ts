@@ -8,6 +8,13 @@ const routes: Routes = [
       component: LayoutComponent
     },
     {
+      path: 'security', // localhost:4200/security
+      loadChildren: () =>
+        import('../app/authentication/authentication.module').then(
+          (m) => m.AuthenticationModule
+      ),
+    },
+    {
       path: 'inventory', // localhost:4200/inventory
           loadChildren: () =>
             import('../app/inventory/inventory.module').then(
