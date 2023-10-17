@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   loginUser(user: UserLogin): Observable<UserQueryVm> {
-    const url = `${this.apiUrlQuery}/login`;
+    const url = `${this.apiUrlQuery}/Login`;
     return this.http.post<UserQueryVm>(url, user);
   }
 }

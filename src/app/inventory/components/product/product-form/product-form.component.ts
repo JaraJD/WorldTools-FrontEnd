@@ -20,7 +20,7 @@ export class ProductFormComponent {
   
   dates : string = ''
   
-  branchId : string = '6F097964-511A-4C9F-85FF-08DBC7B8A317';
+  branchId : string = 'C472D829-57F3-4F10-C8A0-08DBCCE1428E';
 
   state : string = '';
 
@@ -50,7 +50,6 @@ ngOnInit(): void {}
     this.productForm.get('productInventoryStock')?.setValue(0);
     this.productForm.get('branchId')?.setValue(this.branchId);
     console.log(this.productForm.value);
-    console.log("entro")
 
   this.productService.createProduct(this.productForm.value).subscribe({
       next: product => {
@@ -58,7 +57,7 @@ ngOnInit(): void {}
         console.log(product),
         Swal.fire(
           'Created',
-          'Budget created successfully',
+          'Product created successfully',
           'success'
         )
       },
