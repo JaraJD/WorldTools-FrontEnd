@@ -3,6 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { ProductQueryModel } from '../../models/product/queries/product-query-model';
 import { SaleProductCommandModel } from '../../models/product/commands/sale-product-command-model';
+import { SaleResponseModel } from '../../models/sale/sale-response-model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class WebSocketService {
   public messageReceived = new Subject<any>();
   public messageUpdateStock = new Subject<any>();
   public messageSaleProduct = new Subject<any>();
+  public messageSaleUpdate = new Subject<any>();
 
   constructor() {
     this.hubConnection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7031/WebSocked").build();
@@ -42,6 +44,12 @@ export class WebSocketService {
     });
   }
 
+  public salesUpdate = () => {
+    this.hubConnection.on('salesUpdate', (data : SaleResponseModel) => {
+      this.messageSaleUpdate.next(data);
+    });
+  }
+
   public sendMessageToGroup = (product : any) => {
     this.hubConnection.invoke('SendObjectToProducts', product)
       .catch(err => console.error(err));
@@ -54,6 +62,11 @@ export class WebSocketService {
 
   public saleProduct = (product : any) => {
     this.hubConnection.invoke('SendProductTosale', product)
+      .catch(err => console.error(err));
+  }
+
+  public updateSales = (sale : any) => {
+    this.hubConnection.invoke('SendObjectToSale', sale)
       .catch(err => console.error(err));
   }
 }

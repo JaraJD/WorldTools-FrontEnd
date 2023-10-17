@@ -6,6 +6,7 @@ import * as signalR from '@microsoft/signalr';
 import Swal from 'sweetalert2';
 import { PurchaseProductCommandModel } from '../../models/product/commands/purchase-product-command-model';
 import { SaleProductCommandModel } from '../../models/product/commands/sale-product-command-model';
+import { SaleResponseModel } from '../../models/sale/sale-response-model';
 
 @Component({
   selector: 'app-products',
@@ -19,7 +20,7 @@ export class ProductsComponent implements OnInit {
   productToSale :PurchaseProductCommandModel;
   productsToSale : PurchaseProductCommandModel[];
   branchId : string;
-  //private hubConnection: signalR.HubConnection
+  saleResponse : SaleResponseModel;
 
   constructor(
     private productService: ProductService,
@@ -37,6 +38,14 @@ export class ProductsComponent implements OnInit {
         number: 0,
         branchId: '',
         products: []
+      }
+      this.saleResponse = {
+        saleId: '',
+        saleNumber: 0,
+        saleQuantity: 0,
+        saleTotal: 0,
+        saleType: '',
+        branchId: ''
       }
       this.productsToSale = [];
       this.branchId = localStorage.getItem('branchId') || '';
@@ -64,7 +73,6 @@ export class ProductsComponent implements OnInit {
       });
 
       this.webSocketService.messageSaleProduct.subscribe((message: SaleProductCommandModel) => {
-        console.log(message);
         for (const saleProduct of message.products) {
           this.products = this.products.map(product => {
             if (product.productId === saleProduct.productId) {
@@ -142,11 +150,9 @@ export class ProductsComponent implements OnInit {
               this.addCustomerSale(this.productsToSale)
               break;
             case 'reseller':
+              this.addResellerSale(this.productsToSale);
               break;
           }
-
-          console.log(sale)
-          console.log(quantity)
         }
       }
     }
@@ -158,9 +164,9 @@ export class ProductsComponent implements OnInit {
         branchId: this.branchId,
         products: products
       };
-      console.log(this.addSaleProduct);
       this.productService.saleCustomer(this.addSaleProduct).subscribe({
         next: product => {
+          this.saleResponse = product;
           Swal.fire(
             'Sold',
             'Product successfully sold',
@@ -171,6 +177,33 @@ export class ProductsComponent implements OnInit {
         complete: () => {
           console.log('Complete');
           this.webSocketService.saleProduct(this.addSaleProduct);
+          this.webSocketService.updateSales(this.saleResponse);
+          this.productsToSale = [];
+        }
+      });
+    }
+
+    addResellerSale(products : PurchaseProductCommandModel[]){
+      this.addSaleProduct = {
+        number: 2,
+        branchId: this.branchId,
+        products: products
+      };
+      this.productService.saleReseller(this.addSaleProduct).subscribe({
+        next: product => {
+          this.saleResponse = product;
+          Swal.fire(
+            'Sold',
+            'Product successfully sold',
+            'success'
+          )
+        },
+        error:err => console.log(err),
+        complete: () => {
+          console.log('Complete');
+          this.webSocketService.saleProduct(this.addSaleProduct);
+          this.webSocketService.updateSales(this.saleResponse);
+          this.productsToSale = [];
         }
       });
     }
