@@ -11,12 +11,12 @@ import { SaleResponseModel } from '../../models/sale/sale-response-model';
 export class WebSocketService {
   private hubConnection: signalR.HubConnection
   public messageReceived = new Subject<any>();
-  public messageUpdateStock = new Subject<any>();
+  public messageUpdateStock = new Subject<ProductQueryModel>();
   public messageSaleProduct = new Subject<any>();
   public messageSaleUpdate = new Subject<any>();
 
   constructor() {
-    this.hubConnection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7031/WebSocked").build();
+    this.hubConnection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7063/WebSocked").build();
   }
 
   public startConnection = () => {
@@ -26,8 +26,8 @@ export class WebSocketService {
     .catch(err => console.log('Error while starting connection: ' + err))
   }
 
-  public addTransferChartDataListener = () => {
-    this.hubConnection.on('productsUpdate', (data) => {
+  public createProductSocket = () => {
+    this.hubConnection.on('createdProduct', (data) => {
       this.messageReceived.next(data);
     });
   }
@@ -39,34 +39,14 @@ export class WebSocketService {
   }
 
   public productSale = () => {
-    this.hubConnection.on('productSale', (data : SaleProductCommandModel) => {
+    this.hubConnection.on('soldProduct', (data : SaleProductCommandModel) => {
       this.messageSaleProduct.next(data);
     });
   }
 
   public salesUpdate = () => {
-    this.hubConnection.on('salesUpdate', (data : SaleResponseModel) => {
+    this.hubConnection.on('updatedSales', (data : SaleResponseModel) => {
       this.messageSaleUpdate.next(data);
     });
-  }
-
-  public sendMessageToGroup = (product : any) => {
-    this.hubConnection.invoke('SendObjectToProducts', product)
-      .catch(err => console.error(err));
-  }
-
-  public updateStockProduct = (product : any) => {
-    this.hubConnection.invoke('SendProductStockToUpdate', product)
-      .catch(err => console.error(err));
-  }
-
-  public saleProduct = (product : any) => {
-    this.hubConnection.invoke('SendProductTosale', product)
-      .catch(err => console.error(err));
-  }
-
-  public updateSales = (sale : any) => {
-    this.hubConnection.invoke('SendObjectToSale', sale)
-      .catch(err => console.error(err));
   }
 }

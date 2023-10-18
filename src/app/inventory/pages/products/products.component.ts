@@ -56,17 +56,18 @@ export class ProductsComponent implements OnInit {
         this.products = data;
       });
       this.webSocketService.startConnection();
-      this.webSocketService.addTransferChartDataListener();
+      this.webSocketService.createProductSocket();
       this.webSocketService.productStockUpdated();
       this.webSocketService.productSale();
+      
       this.webSocketService.messageReceived.subscribe((message: any) => {
         this.products.push(message);
       });
-      this.webSocketService.messageUpdateStock.subscribe((message: any) => {
+
+      this.webSocketService.messageUpdateStock.subscribe((message: ProductQueryModel) => {
         this.products = this.products.map(product => {
-          
           if (product.productId === message.productId) {
-            product.productInventoryStock += message.productQuantity;
+            product.productInventoryStock = message.productInventoryStock;
           }
           return product;
         });
@@ -113,7 +114,6 @@ export class ProductsComponent implements OnInit {
         error:err => console.log(err),
         complete: () => {
           console.log('Complete');
-          this.webSocketService.updateStockProduct(this.addStockProduct);
         }
       });
     }
@@ -157,7 +157,6 @@ export class ProductsComponent implements OnInit {
       }
     }
 
-
     addCustomerSale(products : PurchaseProductCommandModel[]){
       this.addSaleProduct = {
         number: 1,
@@ -176,8 +175,6 @@ export class ProductsComponent implements OnInit {
         error:err => console.log(err),
         complete: () => {
           console.log('Complete');
-          this.webSocketService.saleProduct(this.addSaleProduct);
-          this.webSocketService.updateSales(this.saleResponse);
           this.productsToSale = [];
         }
       });
@@ -201,8 +198,6 @@ export class ProductsComponent implements OnInit {
         error:err => console.log(err),
         complete: () => {
           console.log('Complete');
-          this.webSocketService.saleProduct(this.addSaleProduct);
-          this.webSocketService.updateSales(this.saleResponse);
           this.productsToSale = [];
         }
       });

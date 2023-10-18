@@ -13,24 +13,17 @@ import Swal from 'sweetalert2';
 })
 export class ProductFormComponent {
   createMode : boolean;
-
+  branchId : string;
   productToCreate: CreateProductCommandModel | undefined;
 
   productForm: FormGroup;
-  
-  dates : string = ''
-  
-  branchId : string = 'C472D829-57F3-4F10-C8A0-08DBCCE1428E';
-
-  state : string = '';
 
 
   constructor(
     private productService: ProductService,
     public webSocketService: WebSocketService,
-    private router: Router,
-    private routeActive: ActivatedRoute,){
-
+    private router: Router){
+      this.branchId = localStorage.getItem('branchId') || '';
 this.createMode = true;
 this.productForm = new FormGroup({
   productName: new FormControl<string | null>(null, Validators.required),
@@ -49,12 +42,10 @@ ngOnInit(): void {}
   create(){
     this.productForm.get('productInventoryStock')?.setValue(0);
     this.productForm.get('branchId')?.setValue(this.branchId);
-    console.log(this.productForm.value);
 
   this.productService.createProduct(this.productForm.value).subscribe({
       next: product => {
         this.productToCreate = product,
-        console.log(product),
         Swal.fire(
           'Created',
           'Product created successfully',
@@ -63,8 +54,8 @@ ngOnInit(): void {}
       },
       error:err => console.log(err),
       complete: () => {
-        console.log('Complete'), this.router.navigate(["/inventory/Products"]);
-        this.webSocketService.sendMessageToGroup(this.productToCreate);
+        this.productForm.reset();
+        console.log('Complete');
       }
     });
   }
