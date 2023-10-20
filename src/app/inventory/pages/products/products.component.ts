@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { PurchaseProductCommandModel } from '../../models/product/commands/purchase-product-command-model';
 import { SaleProductCommandModel } from '../../models/product/commands/sale-product-command-model';
 import { SaleResponseModel } from '../../models/sale/sale-response-model';
+import { AuthService } from 'src/app/authentication/services/auth/auth.service';
 
 @Component({
   selector: 'app-products',
@@ -24,7 +25,8 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    public webSocketService: WebSocketService
+    public webSocketService: WebSocketService,
+    private authService: AuthService
     ) {
       this.addStockProduct = {
         productId: '',
@@ -48,7 +50,8 @@ export class ProductsComponent implements OnInit {
         branchId: ''
       }
       this.productsToSale = [];
-      this.branchId = localStorage.getItem('branchId') || '';
+      const user = this.authService.userData;
+      this.branchId = user?.branchId ?? '';
     }
 
     ngOnInit(): void {

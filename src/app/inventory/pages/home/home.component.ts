@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserQueryVm } from 'src/app/authentication/interfaces/user-query-vm.interface';
 
 @Component({
   selector: 'app-home',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
- userName : string  = localStorage.getItem('user') || '';
+ userName : UserQueryVm  = JSON.parse(localStorage.getItem('user')!);
 }

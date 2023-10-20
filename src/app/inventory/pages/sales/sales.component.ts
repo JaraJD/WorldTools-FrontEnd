@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BranchService } from '../../services/branch/branch.service';
 import { WebSocketService } from '../../services/web-socket/web-socket.service';
 import { SaleResponseModel } from '../../models/sale/sale-response-model';
+import { AuthService } from 'src/app/authentication/services/auth/auth.service';
 
 @Component({
   selector: 'app-sales',
@@ -14,9 +15,11 @@ export class SalesComponent {
 
   constructor(
     private branchService: BranchService,
-    public webSocketService: WebSocketService
+    public webSocketService: WebSocketService,
+    private authService: AuthService
     ) {
-      this.branchId = localStorage.getItem('branchId') || '';
+      const user = this.authService.userData;
+      this.branchId = user?.branchId ?? '';
     }
 
 

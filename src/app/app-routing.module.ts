@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { AuthGuard } from './authentication/security/auth.guard';
 
 const routes: Routes = [
     {
@@ -20,6 +21,7 @@ const routes: Routes = [
             import('../app/inventory/inventory.module').then(
               (m) => m.InventoryModule
           ),
+      canActivate: [AuthGuard]
     },
     {
       path: '**',

@@ -21,30 +21,31 @@ export class LoginComponent {
       userEmail: new FormControl<string>('', [Validators.required, Validators.minLength(1)]),
       password: new FormControl<string>('', Validators.required)
     });
+    if(this.authService.userData){
+      this.router.navigate(["/inventory"]);
+    }
   }
 
 
   enter(){
     console.log(this.usuarioForm.value);
 
-  this.authService.loginUser(this.usuarioForm.value).subscribe({
-      next: user => {
-        localStorage.setItem('user', user.name);
-        localStorage.setItem('email', user.email);
-        localStorage.setItem('branchId', user.branchId ?? '');
-        localStorage.setItem('role', user.role);
-        localStorage.setItem('userId', user.userId);
-        console.log(user),
-        Swal.fire(
-          'Ok',
-          'Session stared',
-          'success'
-        )
-      },
-      error:err => console.log(err.error),
-      complete: () => {
-        console.log('Complete'), this.router.navigate(["/inventory"]);
-      }
-    });
+    this.authService.loginUser(this.usuarioForm.value).subscribe({
+        next: user => {
+          console.log(user);
+          if(user.status === 1){
+            this.router.navigate(["/inventory"]);
+          };
+          Swal.fire(
+            'Ok',
+            'Session stared',
+            'success'
+          )
+        },
+        error:err => console.log(err.error),
+        complete: () => {
+          console.log('Complete');
+        }
+      });
   }
 }
